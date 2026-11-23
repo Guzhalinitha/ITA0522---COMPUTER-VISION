@@ -1,0 +1,35 @@
+import cv2
+import numpy as np
+from google.colab import files
+from google.colab.patches import cv2_imshow
+
+# Upload image
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+# Read image
+img = cv2.imread(filename)
+
+# Convert image to HSV
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+# Define color range
+lower = np.array([0, 0, 0])
+upper = np.array([180, 255, 100])
+
+# Create mask
+mask = cv2.inRange(hsv, lower, upper)
+
+# Remove background
+result = cv2.bitwise_and(img, img, mask=mask)
+
+# Display original image
+print("Original Image:")
+cv2_imshow(img)
+
+# Display background subtracted image
+print("Background Subtracted Image:")
+cv2_imshow(result)
+
+# Save output
+cv2.imwrite("background_subtracted.jpg", result)
